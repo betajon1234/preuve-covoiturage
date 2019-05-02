@@ -20,6 +20,8 @@ roles:
       - operator.read
       - journey.read
       - journey.list
+      - trip.read
+      - trip.list
       - profile.read
       - profile.update
       - profile.password

@@ -30,6 +30,8 @@ roles:
       - journey.delete
       - journey.import
       - journey.process
+      - trip.read
+      - trip.list
       - profile.read
       - profile.update
       - profile.password
