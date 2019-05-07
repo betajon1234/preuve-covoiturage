@@ -133,6 +133,16 @@ export const PATH_FR = {
       unknown: 'Pas d\'info.',
     },
   },
+  'identity.over_18': {
+    name: 'Age',
+    values: {
+      true: 'Majeur',
+      false: 'Mineur',
+      yes: 'Majeur',
+      no: 'Mineur',
+      unknown: 'Pas d\'info.',
+    },
+  },
   traveler_hash: {
     name: 'Id',
   },

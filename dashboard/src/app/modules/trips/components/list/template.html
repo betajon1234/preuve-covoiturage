@@ -51,16 +51,16 @@
           </ng-template>
           <ng-template pTemplate="header" let-columns>
           <tr>
-            <th *ngFor="let column of subColumns">
+            <th *ngFor="let column of columns">
                 <span>
                 {{getKey(column.header)}}
                 </span>
             </th>
           </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-rowIndex="rowIndex" let-columns="subColumns" let-rowData>
+          <ng-template pTemplate="body" let-rowIndex="rowIndex" let-columns="columns" let-rowData>
             <tr>
-              <td *ngFor="let col of subColumns">
+              <td *ngFor="let col of columns">
                 <span>{{getValue(rowData, col.field)}}</span>
               </td>
             </tr>

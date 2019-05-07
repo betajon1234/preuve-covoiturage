@@ -56,18 +56,18 @@
 
     <!-- More filters -->
 
-    <!-- INSEE -->
+    <!-- TOWN -->
     <div *ngIf="showMoreFilters" class="p-grid">
       <div class="p-col-4">
         <div class="p-grid">
           <div class="p-col-6">
             <p class="filter-label">Commune départ</p>
-            <input style="width: 100%" pInputText (input)="filterText($event, 'passenger.start.town')"
-                   [value]="dt.filters['passenger.start.town'] ? dt.filters['passenger.start.town'].value : ''">
+            <input style="width: 100%" pInputText (input)="filterTown($event)"
+                   [value]="dt.filters['people.start.town'] ? dt.filters['people.start.town'].value : ''">
           </div>
           <div class="p-col-6">
             <p class="filter-label">Commune arrivée</p>
-            <input style="width: 100%" pInputText (input)="filterText($event, 'passenger.end.town')"
+            <input style="width: 100%" pInputText (input)="filterTown($event)"
                    [value]="dt.filters['passenger.end.town'] ? dt.filters['passenger.end.town'].value : ''">
           </div>
         </div>

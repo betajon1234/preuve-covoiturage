@@ -72,6 +72,11 @@ export class TripFilterComponent implements OnInit {
    */
   filters = {};
 
+  /*
+   * Exportet global stringified filter for URI request
+   */
+  exportFilter:string = null;
+
   fr = DATES.fr;
 
   ngOnInit(): void {
@@ -81,11 +86,6 @@ export class TripFilterComponent implements OnInit {
     this.resetVar();
   }
 
-  selectAom(selection) {
-    if (!selection || !selection.value) return;
-    this.addFilter(selection.value, 'aom', 'in');
-  }
-
   onDistanceChange(event) {
     if (this.distanceTimeout) {
       clearTimeout(this.distanceTimeout);
@@ -93,10 +93,19 @@ export class TripFilterComponent implements OnInit {
 
     this.distanceTimeout = setTimeout(
       () => {
-        this.addFilter(this.distanceRange, 'passenger.distance', 'gt&lt');
+        this.setDistanceFilter(this.distanceRange);
       },
       250, // tslint:disable-line:no-magic-numbers
     );
+  }
+
+  private setDistanceFilter(range) {
+    const filter = range.length > 0 ? { people:{ $elemMatch: { $and : [
+      { distance: { $gt: range[0] } },
+      { distance: { $lt: range[1] } },
+    ],
+    }}} : null;
+    this.addFilter(filter, 'people.distance');
   }
 
   onDateChange() {
@@ -112,11 +121,17 @@ export class TripFilterComponent implements OnInit {
     }
 
     if (this.minDate && this.maxDate) {
-      this.addFilter([isoMinDate, isoMaxDate], 'passenger.start.datetime', 'gt&lt');
+      const filter = { $or: [
+        { start: { $gt : isoMinDate } },
+        { start: { $lt : isoMaxDate } },
+      ]};
+      this.addFilter(filter, 'start');
     } else if (this.minDate) {
-      this.addFilter(isoMinDate, 'passenger.start.datetime', 'gt');
+      const filter = { start: isoMinDate };
+      this.addFilter(filter, 'start');
     } else if (this.maxDate) {
-      this.addFilter(isoMaxDate, 'passenger.start.datetime', 'lt');
+      const filter = { start: isoMaxDate };
+      this.addFilter(filter, 'start');
     }
   }
 
@@ -124,68 +139,83 @@ export class TripFilterComponent implements OnInit {
    * todo: Not active yet
    */
   onTimeChange() {
-    const isoMinTime = new Date(this.minTime).getHours();
-    const isoMaxTime = new Date(this.maxTime).getHours();
-
-    if (this.minTime && this.maxTime) {
-      this.addFilter([isoMinTime, isoMaxTime], 'time', 'gt&lt');
-    } else if (this.minTime) {
-      this.addFilter(isoMinTime, 'time', 'gt');
-    } else if (this.maxTime) {
-      this.addFilter(isoMaxTime, 'time', 'lt');
-    }
+    // const isoMinTime = new Date(this.minTime).getHours();
+    // const isoMaxTime = new Date(this.maxTime).getHours();
+    //
+    // if (this.minTime && this.maxTime) {
+    //   this.addFilter([isoMinTime, isoMaxTime], 'time', 'gt&lt');
+    // } else if (this.minTime) {
+    //   this.addFilter(isoMinTime, 'time', 'gt');
+    // } else if (this.maxTime) {
+    //   this.addFilter(isoMaxTime, 'time', 'lt');
+    // }
   }
 
   /**
    * todo: Not active yet
    */
   onDayChange() {
-    this.addFilter(this.selectedDays, 'day', 'in');
+    //
   }
 
-  filterText(event, colName) {
-    const colIndex = this.getColumnIndexFromName(colName);
-    this.addFilter(event.target.value, this.columns[colIndex].field, this.columns[colIndex].filterMatchMode);
+  filterTown(event) {
+    const town = event.target.value;
+    const filter = town ? { people:{ $elemMatch: { 'start.town' : { $regex: town } } } } : null;
+    this.addFilter(filter, 'people.start.town');
   }
 
   onClassChange() {
-    this.addFilter(this.classes, 'operator_class', 'in');
+    const filter = this.classes.length > 0 ? { people:{ $elemMatch:{ class: { $in: this.classes } } } } : null;
+    this.addFilter(filter, 'people.class');
   }
 
   onOperatorChange(operatorIds) {
     this.operatorIds = operatorIds;
-    this.addFilter(this.operatorIds, 'operator._id', 'in');
+    const filter = operatorIds.length > 0 ? { operator_id:{ $in : operatorIds } } : null;
+    this.addFilter(filter, 'operator_id');
   }
 
   onAomChange(aomIds) {
     this.aomIds = aomIds;
-    this.addFilter(this.aomIds, 'aom._id', 'in');
+    const filter = aomIds.length > 0 ? { aom:{ $elemMatch: { _id : { $in : aomIds } } } } : null;
+    this.addFilter(filter, 'aom._id');
   }
 
   onAgeChange() {
     const allAges = ['true', 'false'];
     if (this.ages.indexOf('nc') !== -1) {
       if (this.ages.indexOf('true') !== -1 && this.ages.indexOf('false') !== -1) {
-        this.addFilter(allAges, 'passenger.identity.over_18', 'in');
+        this.setAgeFilter(allAges, '$in');
       } else if (this.ages.indexOf('true') !== -1) {
-        this.addFilter(['false'], 'passenger.identity.over_18', 'nin');
+        this.setAgeFilter(['false'], '$nin');
       } else if (this.ages.indexOf('false') !== -1) {
-        this.addFilter(['true'], 'passenger.identity.over_18', 'nin');
+        this.setAgeFilter(['true'], '$nin');
       } else {
-        this.addFilter(allAges, 'passenger.identity.over_18', 'nin');
+        this.setAgeFilter(allAges, '$nin');
       }
     } else {
-      this.addFilter(this.ages, 'passenger.identity.over_18', 'in');
+      this.setAgeFilter(this.ages, '$in');
     }
   }
 
+  private setAgeFilter(ages, filterType) {
+    const filter = ages.length > 0 ? { people:{ $elemMatch: { 'identity.over_18' : { [filterType] : ages } } } } : null;
+    this.addFilter(filter, 'people.identity.over_18');
+  }
 
-  addFilter(value, colName, filterType) {
-    this.filters[colName] = {
-      colName,
-      value,
-      filterType,
-    };
+
+  addFilter(value, colName) {
+    const andFilter = [];
+    this.filters[colName] = value;
+    Object
+      .keys(this.filters)
+      .forEach((key) => {
+        if (this.filters[key]) {
+          andFilter.push(this.filters[key]);
+        }
+      });
+    console.log(andFilter);
+    this.exportFilter = JSON.stringify({ $and: andFilter });
   }
 
   hasAnyGroup(groups: string[]) {
@@ -193,11 +223,12 @@ export class TripFilterComponent implements OnInit {
   }
 
   apply() {
-    this.applyFilters.emit(this.filters);
+    this.applyFilters.emit({ main : { value: this.exportFilter, colName: 'main', filterType: 'filter' } });
   }
 
   reset() {
     this.filters = {};
+    this.exportFilter = null;
     this.resetVar();
     this.dt.reset();
     this.applyFilters.emit();

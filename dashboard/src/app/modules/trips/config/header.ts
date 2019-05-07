@@ -13,6 +13,7 @@ export const TRIP_HEADER = {
       'cost',
       'operator_class',
       'distance',
+      'identity.over_18',
     ],
   },
   selection: {

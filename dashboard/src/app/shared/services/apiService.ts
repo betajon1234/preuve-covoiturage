@@ -146,32 +146,36 @@ export class ApiService {
         if (value[2]) {
           switch (value[2]) {
             case 'gt':
-              comparaison = '>';
               vals = value[1];
+              ret += `${sep}${key}>${vals}`;
               break;
             case 'lt':
               comparaison = '<';
               vals = value[1];
+              ret += `${sep}${key}<${vals}`;
               break;
             case 'in':
               comparaison = '=';
               vals = value[1].join();
+              ret += `${sep}${key}=${vals}`;
               break;
             case 'nin':
               comparaison = '!=';
               vals = value[1].join();
+              ret += `${sep}${key}!=${vals}`;
               break;
             case 'notexists':
-              comparaison = '';
-              vals = '';
               key = `!${key}`;
+              ret += `${sep}${key}`;
               break;
+            case 'filter':
+              vals = value[1];
+              ret += `${sep}filter=${vals}`;
           }
         } else {
-          comparaison = '=';
           vals = value[1];
+          ret += `${sep}${key}=${vals}`;
         }
-        ret += `${sep}${key}${comparaison}${vals}`;
         sep = '&';
       });
     }
