@@ -3,28 +3,34 @@ export const TRIP_HEADER = {
 
   main: {
     trip: [
-
+      'start',
+      'operator_id',
     ],
-    person: [
+    driverPassenger: [
+      'is_driver',
       'start.insee',
       'end.insee',
       'cost',
+      'operator_class',
+      'distance',
     ],
   },
   selection: {
     trip: [
-
+      'start',
+      'operator_id',
     ],
-    driver: [
-    ],
-    passenger: [
+    driverPassenger: [
+      'is_driver',
+      'start.insee',
+      'end.insee',
+      'operator_class',
+      'distance',
     ],
   },
   sort : {
     trip: [
-      'passenger.start.date',
-      'passenger.distance',
-      'operator_class',
+      'start',
     ],
   },
 

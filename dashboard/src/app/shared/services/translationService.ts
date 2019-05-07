@@ -97,7 +97,11 @@ export class TranslationService {
     }
 
     if (key === 'distance') {
-      return (value / 1000).toFixed(1); // tslint:disable-line:no-magic-numbers
+      return (value / 1000).toFixed(1) + ' km'; // tslint:disable-line:no-magic-numbers
+    }
+
+    if (key === 'cost') {
+      return value + ' €';
     }
 
     return value;

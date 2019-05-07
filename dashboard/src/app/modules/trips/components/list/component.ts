@@ -11,6 +11,7 @@ import { ApiResponse } from '~/entities/responses/apiResponse';
 
 import { TripService } from '../../services/tripService';
 import { TRIP_HEADER } from '../../config/header';
+import {JOURNEY_HEADER} from "~/modules/journeys/config/header";
 
 @Component({
   selector: 'app-trip-list',
@@ -36,27 +37,17 @@ export class TripListComponent {
   headList = TRIP_HEADER.main.trip;
   selectedHeadList = TRIP_HEADER.selection.trip;
   driverPassengerHeadList = TRIP_HEADER.main.driverPassenger;
+  selectedDriverPassengerHeadList = TRIP_HEADER.selection.driverPassenger;
   sortList = TRIP_HEADER.sort.trip;
+
   columns = [];
   selectedColumns = [];
   subColumns = [];
-  subTableTitles = ['Conducteur', 'Passager'];
+  selectedSubColumns = [];
   total = 30;
   perPage = 10;
   loading = true;
-  // exportItems = [{
-  //   label: 'CSV',
-  //   icon: 'pi pi-file',
-  //   command: () => {
-  //     this.export('csv');
-  //   },
-  // },{
-  //   label: 'JSON',
-  //   icon: 'pi pi-file',
-  //   command: () => {
-  //     this.export('json');
-  //   },
-  // }];
+
   @ViewChild('dt') dt;
   private filters;
 
@@ -88,9 +79,6 @@ export class TripListComponent {
 
   getSortableField(field) {
     if (this.sortList.indexOf(field) !== -1) {
-      if (field === 'passenger.start.date') {
-        return 'passenger.start.datetime';
-      }
       return field;
     }
     return null;
@@ -141,6 +129,9 @@ export class TripListComponent {
     for (const head of this.driverPassengerHeadList) {
       this.subColumns.push(this.ts.createColumn(head));
     }
+    for (const head of this.selectedDriverPassengerHeadList) {
+      this.selectedSubColumns.push(this.ts.createColumn(head));
+    }
   }
 
   private get(filters: any[any] = []) {
@@ -158,7 +149,7 @@ export class TripListComponent {
 
   private setDefault(event: LazyLoadEvent) {
     if (!event.sortField) {
-      event.sortField = 'passenger.start.datetime';
+      event.sortField = 'start';
       event.sortOrder = -1;
     }
     return event;

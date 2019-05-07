@@ -30,6 +30,11 @@ export class MenuComponent implements OnInit {
             visible: true,
           },
           {
+            label: 'Trajets reconstitués', icon: 'pi pi-fw pi-share-alt', routerLink: '/dashboard/trips',
+            routerLinkActiveOptions: { exact: true },
+            visible: this.hasAnyGroup(['aom', 'registry']) && !environment.production,
+          },
+          {
             label: 'Import', icon: 'pi pi-fw pi-upload', routerLink: '/dashboard/operators/journey-import', routerLinkActive: 'is-active',
             visible: this.hasAnyGroup(['operators']),
           },

@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Aom } from '~/entities/database/aom';
 import { ApiResponse } from '~/entities/responses/apiResponse';
 import { AomService } from '~/modules/aom/services/aomService';
+import { JourneyService } from '~/modules/journeys/services/journeyService';
 
 
 /*
@@ -10,14 +11,15 @@ import { AomService } from '~/modules/aom/services/aomService';
  *
  */
 @Component({
-  selector: 'app-aom-multiple-dropdown',
+  selector: 'app-aom-journey-multiple-dropdown',
   templateUrl: 'template.html',
   styleUrls: ['style.scss'],
 })
 
-export class AomMultipleDropdownComponent implements OnInit {
+export class AomJourneyMultipleDropdownComponent implements OnInit {
   constructor(
-    private aomService: AomService
+    private aomService: AomService,
+    private journeyService: JourneyService,
   ) {
   }
 
@@ -57,14 +59,15 @@ export class AomMultipleDropdownComponent implements OnInit {
   }
 
   public getAoms() {
-    this.aomService.get().subscribe((aoms: ApiResponse) => {
-      aoms.data.forEach((aom: Aom) => {
-        this.aoms.push({
-          key: aom._id,
-          value: aom.name,
-        });
+    this.journeyService
+      .listAom()
+      .subscribe((response) => {
+        this.aoms = response['data']
+          .map(({ _id, name, count }) => ({
+            key: _id,
+            value: `${name} (${count})`,
+          }));
       });
-    });
   }
 
   public filter(event) {

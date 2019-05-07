@@ -18,6 +18,12 @@ const routes: Routes = [
     loadChildren: './modules/journeys/journey.module#JourneyModule',
   },
   {
+    path: 'dashboard/trips',
+    component: LayoutComponent,
+    canActivate: [AuthGuard],
+    loadChildren: './modules/trips/trip.module#TripModule',
+  },
+  {
     path: 'dashboard/incentives',
     component: LayoutComponent,
     data: { groups: ['aom', 'registry'] },

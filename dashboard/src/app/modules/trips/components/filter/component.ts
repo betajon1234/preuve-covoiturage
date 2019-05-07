@@ -67,9 +67,6 @@ export class TripFilterComponent implements OnInit {
 
   ages = [];
 
-  aomFiltered: any[] = [];
-  aomList: any[] = [];
-
   /*
    * Saved filters before applyed to query
    */
@@ -82,21 +79,6 @@ export class TripFilterComponent implements OnInit {
     this.defaultMaxDate = new Date();
     this.defaultHourDate = new Date(TRIP_HOUR.defaultDate);
     this.resetVar();
-
-    this.tripService
-      .listAom()
-      .subscribe((response: any[]) => {
-        this.aomList = (response['data'] || [])
-          .map(aom => ({
-            value: aom._id._id,
-            label: `${aom._id.name} (${aom.count})`,
-          }));
-      });
-  }
-
-  filterAom(event) {
-    this.aomFiltered = this.aomList
-      .filter(i => (new RegExp(event.query, 'i').test(i.label)));
   }
 
   selectAom(selection) {
