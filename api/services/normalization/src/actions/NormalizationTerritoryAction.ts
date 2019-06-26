@@ -36,7 +36,7 @@ export class NormalizationTerritoryAction extends Parents.Action {
     await Promise.all(paths.map(async (path) => {
       const position = _.get(param.journey, path);
       const territories = await this.findTerritories(position, context);
-      _.set(territoriesEnrichedJourney, `${path}.territories`, territories);
+      _.set(territoriesEnrichedJourney, `${path}.territory`, territories);
     }));
 
     // await this.kernel.notify( // todo: should be notify
