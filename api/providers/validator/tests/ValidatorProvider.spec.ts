@@ -1,6 +1,7 @@
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon from 'sinon';
+import { describe } from 'mocha';
 import { ConfigProviderInterfaceResolver } from '@ilos/provider-config';
 
 import { ValidatorProvider } from '../src/ValidatorProvider';
